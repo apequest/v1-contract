@@ -19,25 +19,24 @@ contract ApequestReward is Ownable, ReentrancyGuard {
         address creator;
         bool isActive;
         IToken token;
+        uint256 amount;
     }
 
     address[] public stableTokens;
     bytes32[] public quizzids;
     mapping(address => IToken) public stableToken; // address: tokenaddress, uint256: index i.e stableTokens[tokenIndex]
     mapping(bytes32 => IQuizz) public quizz; // bytes32: aid, index: quizzesIndex: quizz contract id to  quizzesIndex i.e quizzes[quizzesIndex]
-    mapping(bytes32 => uint256) public stakeAmount; // bytes32: aid, stakeamount
-    mapping(address => uint256) public stakeHolders; // address: uint256, stakeamount
+    mapping(address => mapping (address => uint256) ) public stakeHolders; //  address: creator, address: token address, uint256 stakeamount
     uint256 public quizzCounter;
     uint256 public tokenCounter;
-
+    
     function stake(address _token, bytes32 _aid, uint256 _amount) public{
         require(stableToken[_token].isActive, "only listed tokens can be staked ref: doc.apequest.club");
-        IQuizz memory _quizz =  IQuizz(quizzCounter, _aid, msg.sender, true,getToken(_token) );
+        IQuizz memory _quizz =  IQuizz(quizzCounter, _aid, msg.sender, true,getToken(_token), _amount );
         quizz[_aid] = _quizz;
         quizzids.push(_aid);
         IERC20(_token).transfer(address(this),_amount);
-        stakeHolders[msg.sender] += _amount;
-        stakeAmount[_aid] = _amount;
+        stakeHolders[msg.sender][_token] += _amount;
         quizzCounter +=1;
     }
     
