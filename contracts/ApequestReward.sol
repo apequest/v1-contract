@@ -17,7 +17,7 @@ contract ApequestReward is Ownable, ReentrancyGuard {
         uint256 cid; // live quizz id no
         bytes32 aid; // unique
         address creator;
-        bool isActive;
+        bool isCompleted;
         IToken token;
         uint256 amount;
     }
@@ -30,25 +30,33 @@ contract ApequestReward is Ownable, ReentrancyGuard {
     uint256 public quizzCounter;
     uint256 public tokenCounter;
 
+    constructor() {
+        quizzCounter = 1;
+    }
+
     function stake(address _token, bytes32 _aid, uint256 _amount) public {
         require(
             stableToken[_token].isActive,
             "only listed tokens can be staked"
         );
+        require(
+            IERC20(_token).allowance(msg.sender, address(this)) >= _amount,
+            "Insuficient Allowance 22"
+        );
+        IERC20(_token).transferFrom(msg.sender, address(this), _amount);
+        stakeHolders[msg.sender][_token] += _amount;
+
         IQuizz memory _quizz = IQuizz(
             quizzCounter,
             _aid,
             msg.sender,
-            true,
+            false,
             getToken(_token),
             _amount
         );
         quizz[_aid] = _quizz;
         quizzids.push(_aid);
-        // IERC20(_token).approve(address(this),_amount);
-        // IERC20(_token).transferFrom
-        IERC20(_token).transfer(address(this), _amount); // as of now using transfer:: approve, transferFrom
-        stakeHolders[msg.sender][_token] += _amount;
+
         quizzCounter += 1;
     }
 
@@ -62,7 +70,7 @@ contract ApequestReward is Ownable, ReentrancyGuard {
         });
         tokenCounter += 1;
     }
-    
+
     function getQuizz(bytes32 _aid) public view returns (IQuizz memory) {
         return quizz[_aid];
     }
