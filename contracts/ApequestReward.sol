@@ -88,11 +88,6 @@ contract ApequestReward is Ownable, ReentrancyGuard {
         return stableToken[_token];
     }
 
-    // temp as of now for testnet amount removed once its went to live
-    function withdraw() public onlyOwner {
-        payable(owner()).transfer(address(this).balance);
-    }
-
     receive() external payable {}
 
     fallback() external payable {}
