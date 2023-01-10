@@ -12,7 +12,7 @@ contract ApequestReward is Ownable, ReentrancyGuard {
         address token;
         bool isActive;
     }
-
+    
     struct IQuizz {
         uint256 cid; // live quizz id no
         bytes32 aid; // unique
@@ -22,14 +22,15 @@ contract ApequestReward is Ownable, ReentrancyGuard {
         uint256 amount;
     }
 
+    uint256 public quizzCounter;
     address[] public stableTokens;
+    uint256 public tokenCounter;
     bytes32[] public quizzids;
     mapping(address => IToken) public stableToken; // address: tokenaddress, uint256: index i.e stableTokens[tokenIndex]
     mapping(bytes32 => IQuizz) public quizz; // bytes32: aid, index: quizzesIndex: quizz contract id to  quizzesIndex i.e quizzes[quizzesIndex]
     mapping(address => mapping(address => uint256)) public stakeHolders; //  address: creator, address: token address, uint256 stakeamount
-    uint256 public quizzCounter;
-    uint256 public tokenCounter;
-
+    
+    
     constructor() {
         quizzCounter = 1;
     }
@@ -58,6 +59,7 @@ contract ApequestReward is Ownable, ReentrancyGuard {
         quizzids.push(_aid);
 
         quizzCounter += 1;
+
     }
 
     function setToken(address _token) public onlyOwner {

@@ -35,7 +35,7 @@ describe("Apequest", function () {
       tx = await txn.wait();
       txn = await apequest.connect(deployer).setToken(usdc.address)
       tx = await txn.wait();
-
+      
       expect(await apequest.stableTokens(0)).to.be.equal(usdt.address)
       expect(await apequest.stableTokens(1)).to.be.equal(usdc.address)
       let data = await apequest.stableToken(usdt.address);
@@ -64,7 +64,7 @@ describe("Apequest", function () {
       tx = await usdt.connect(creator1).balanceOf(creator1.address);
       tx = await usdt.connect(creator1).approve(apequest.address, ethers.utils.parseEther("10"));
       txn = await tx.wait();
-
+      
       tx = await apequest.connect(creator1).stake(usdt.address, ethers.utils.formatBytes32String("123456asaasc"), ethers.utils.parseEther("5"));
       txn = await tx.wait()
 
@@ -91,9 +91,9 @@ describe("Apequest", function () {
       expect(tx.amount).to.be.equal(ethers.utils.parseEther("5"));
       expect(tx.aid).to.be.equal(ethers.utils.formatBytes32String("1851515sdcsdc"));
     });
-    
 
-  });
+
+  }); 
 
 
 
