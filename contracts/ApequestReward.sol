@@ -21,7 +21,7 @@ contract ApequestReward is Ownable, ReentrancyGuard {
         IToken token;
         uint256 amount;
     }
-
+	
     uint256 public quizzCounter;
     address[] public stableTokens;
     uint256 public tokenCounter;
